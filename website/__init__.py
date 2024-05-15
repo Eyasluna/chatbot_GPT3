@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from .routes import routes
+from os import path
 
 db = SQLAlchemy()
 DB_NAME = "database.db"
@@ -16,4 +17,15 @@ def create_app():
     db.init_app(app)
     # Adding routes
     app.register_blueprint(routes, url_prefix="/")
+
+    # Creating the database
+    create_database()
+
     return app
+
+
+def create_database():
+    # If the database does not exist, create it
+    if not path.exists('website/' + DB_NAME):
+        db.create_all()
+        print("Database Created!")
