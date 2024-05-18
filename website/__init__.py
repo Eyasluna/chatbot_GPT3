@@ -19,13 +19,14 @@ def create_app():
     app.register_blueprint(routes, url_prefix="/")
 
     # Creating the database
-    create_database()
+    create_database(app)
 
     return app
 
 
-def create_database():
+def create_database(app):
     # If the database does not exist, create it
     if not path.exists('website/' + DB_NAME):
-        db.create_all()
+        with app.app_context():
+            db.create_all()
         print("Database Created!")
