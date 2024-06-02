@@ -1,7 +1,11 @@
 from flask import Blueprint, render_template, request
 from openai import OpenAI
+from dotenv import load_dotenv
+import os
 
-client = OpenAI(api_key='sk-chatbot-wCAWYUoRkTpsO2F66561T3BlbkFJq4ypl1aGBkfwMkoWTlc8')
+load_dotenv()
+api_key = os.getenv('OPENAI_API_KEY')
+client = OpenAI(api_key=api_key)
 routes = Blueprint('routes', __name__)
 history_list = []
 
