@@ -1,8 +1,10 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from .routes import routes
-from os import path
+from os import path, getenv
+from dotenv import load_dotenv
 
+load_dotenv()
 db = SQLAlchemy()
 DB_NAME = "database.db"
 
@@ -10,7 +12,7 @@ DB_NAME = "database.db"
 def create_app():
     # Creating new App
     app = Flask(__name__)
-    app.config['SECRET_KEY'] = "Simple Secret Key"
+    app.config['SECRET_KEY'] = getenv('SECRET_KEY')
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     # Adding the database to the application
     app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{DB_NAME}"
@@ -19,7 +21,9 @@ def create_app():
     app.register_blueprint(routes, url_prefix="/")
 
     # Creating the database
-    create_database(app)
+    from .models import Result
+    with app.app_context():
+        create_database(app)
 
     return app
 
@@ -30,3 +34,5 @@ def create_database(app):
         with app.app_context():
             db.create_all()
         print("Database Created!")
+    else:
+        print("Database already exists.")
